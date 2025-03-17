@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Logger} from '@nestjs/common';
+import { Controller, Post, Get, Body, Logger, UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDTO } from './dto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -15,8 +16,15 @@ export class UserController {
   }
 
   @Post("login")
-  async loginUser(@Body() user: UserDTO) {
+  async loginUser(@Body() user: { email: string; password: string } ) {
     this.logger.log('Login user');
     return this.userService.loginUser(user);
+  }
+
+  @Get("get")
+  @UseGuards(AuthGuard)
+  async getUser(@Body() dto: UserDTO) {
+    this.logger.log('Get user');
+    return this.userService.getUser(dto);
   }
 }

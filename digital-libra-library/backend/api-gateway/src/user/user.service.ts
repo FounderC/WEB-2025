@@ -32,4 +32,10 @@ export class UserService {
     this.logger.log(`Logging user with email": ${dto.email}`);
     return this.send("login", dto);
   }
+
+  getUser(dto: { email: string; }){
+    this.logger.log(`Getting user with email": ${dto.email}`);
+    return this.send("get", dto);
+  }
 }
+ 
