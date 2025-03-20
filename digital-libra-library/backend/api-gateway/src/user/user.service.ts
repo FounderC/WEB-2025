@@ -24,18 +24,11 @@ export class UserService {
   }
   
   registrationUser(dto: UserDTO) {
-    this.logger.log('Registration user');
     return this.send("create", dto);
   }
 
   loginUser(dto: { email: string; password: string; }) {
-    this.logger.log(`Logging user with email": ${dto.email}`);
     return this.send("login", dto);
-  }
-
-  getUser(dto: { email: string; }){
-    this.logger.log(`Getting user with email": ${dto.email}`);
-    return this.send("get", dto);
   }
 }
  

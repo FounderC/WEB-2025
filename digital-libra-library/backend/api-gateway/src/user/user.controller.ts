@@ -11,20 +11,11 @@ export class UserController {
 
   @Post('register')
   async registrationUser(@Body() user: UserDTO) {
-    this.logger.log('Registration user');
     return this.userService.registrationUser(user);
   }
 
   @Post("login")
   async loginUser(@Body() user: { email: string; password: string } ) {
-    this.logger.log('Login user');
     return this.userService.loginUser(user);
-  }
-
-  @Get("get")
-  @UseGuards(AuthGuard)
-  async getUser(@Body() dto: UserDTO) {
-    this.logger.log('Get user');
-    return this.userService.getUser(dto);
   }
 }

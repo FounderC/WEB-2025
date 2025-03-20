@@ -11,21 +11,16 @@ export class AuthController {
 
   @MessagePattern("tokens")
   async generateTokens(dto): Promise<Tokens> {
-    this.logger.log('Generating tokens');
     return this.authService.generateTokens(dto);
   }
 
   @MessagePattern("verify")
   async verifyToken(dto): Promise<TokenPayload> {
-    this.logger.log('Verifying token');
-    const payload = await this.authService.verifyAccessToken(dto.token);
-    this.logger.log(`Decoded Payload: ${JSON.stringify(payload)}`); // ✅ Log payload
-    return payload;
+    return this.authService.verifyAccessToken(dto.token);
   }
 
   @MessagePattern("refresh")
   async refreshTokens(dto): Promise<Tokens> {
-    this.logger.log('Refreshing tokens');
     return this.authService.refreshTokens(dto);
   }
 }

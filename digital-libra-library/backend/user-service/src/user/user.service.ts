@@ -1,5 +1,4 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, UnauthorizedException, Logger, HttpException, HttpStatus } from '@nestjs/common';import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
@@ -40,30 +39,18 @@ export class UserService {
     let user = await this.findByEmail(dto.email);
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN); 
     }
 
     let isPasswordValid = await bcrypt.compare(dto.password, user.password);;
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 
     return this.authService.generateTokens({
       member_id: user.id
     });
-  }
-
-  async update(id: string) {
-    return await this.userRepository.findOne({where: { id }});
-  }
-
-  async findAll() {
-    return await this.userRepository.find();
-  }
-
-  async findByName(username: string) {
-    return await this.userRepository.findOne({where: { username }});
   }
 
   async findByEmail(email: string) {

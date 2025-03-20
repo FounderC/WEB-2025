@@ -16,9 +16,4 @@ export class UserController {
   login(dto: { email: string; password: string }) {
     return this.userService.login(dto);
   }
-
-  @MessagePattern('get')
-  get(email: string) {
-    return this.userService.findByEmail(email);
-  }
 }

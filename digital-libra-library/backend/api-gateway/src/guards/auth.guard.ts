@@ -19,8 +19,6 @@ export class AuthGuard implements CanActivate {
       const request = context.switchToHttp().getRequest();
       const token = request.headers.authorization?.split(' ')[1];
 
-      this.logger.log('Token: $(token)')
-
       if (!token) {
         return false;
       }
@@ -29,10 +27,7 @@ export class AuthGuard implements CanActivate {
         const $user = await firstValueFrom(
           this.userClient.send("verify", { token }),
         );
-
-        this.logger.log(`User from verify: ${JSON.stringify($user)}`); // Log user
   
-        // Attach user to request for use in controllers
         request.user = $user;
         return true;
       } 

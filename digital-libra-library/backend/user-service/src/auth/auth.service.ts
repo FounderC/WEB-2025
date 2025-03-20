@@ -14,12 +14,12 @@ export class AuthService {
   async generateTokens(payload: TokenPayload): Promise<Tokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.sign(payload, {
-        secret: '123',
+        secret: this.configService.get<string>("JWT_SECRET"),
         expiresIn:
           '1d',
       }),
       this.jwtService.sign(payload, {
-        secret: '123',
+        secret: this.configService.get<string>("JWT_SECRET"),
         expiresIn:
           '7d',
       }),
@@ -36,7 +36,7 @@ export class AuthService {
   async verifyAccessToken(token: string): Promise<TokenPayload> {
     try {
       return this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET') || '123',
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch (error) {
       throw new RpcException(error);
@@ -46,7 +46,7 @@ export class AuthService {
   async verifyRefreshToken(token: string): Promise<TokenPayload> {
     try {
       return this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET') || '123',
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch (error) {
       throw new RpcException(error);
