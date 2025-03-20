@@ -11,10 +11,11 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
       provide: 'USER_SERVICE',
       useFactory: () =>
         ClientProxyFactory.create({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: 'localhost',
-            port: 3001, 
+            urls: ['amqp://localhost:5672'],
+            queue: 'user-service',
+            queueOptions: { durable: false },
           },
         }),
     },
