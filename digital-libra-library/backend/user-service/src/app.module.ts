@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     UserModule,
     AuthModule,
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot({isGlobal: true, envFilePath: '../.env'}),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

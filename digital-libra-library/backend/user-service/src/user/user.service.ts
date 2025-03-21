@@ -1,4 +1,5 @@
-import { Injectable, UnauthorizedException, Logger, HttpException, HttpStatus } from '@nestjs/common';import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, UnauthorizedException, Logger, HttpException, HttpStatus, ForbiddenException, ConflictException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
@@ -6,10 +7,10 @@ import { AuthService } from '../auth/auth.service';
 
 import { UserDTO } from './dto';
 import { User } from './entities/user.entity';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
-  private readonly logger = new Logger(UserService.name);
   private saltRounds = 10; 
 
   constructor(
@@ -19,9 +20,11 @@ export class UserService {
   ) {}
 
   async create(dto: UserDTO) {
-    this.logger.log(`Creating user: ${JSON.stringify(dto)}`);
-    
     const userPassword = await bcrypt.hash(dto.password, this.saltRounds);
+
+    if (this.findByEmail(dto.email) !== null){
+      return { message: 'Test', status: HttpStatus.BAD_REQUEST }; 
+    }
 
     const $user = this.userRepository.create({
       ...dto,
@@ -31,7 +34,8 @@ export class UserService {
     const user = await this.userRepository.save($user);
 
     return this.authService.generateTokens({
-      member_id: user.id
+      member_id: user.id,
+      role_id: user.role
     });
   }
 
@@ -39,17 +43,18 @@ export class UserService {
     let user = await this.findByEmail(dto.email);
 
     if (!user) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN); 
+      return { message: 'Test', status: HttpStatus.UNAUTHORIZED }; 
     }
 
     let isPasswordValid = await bcrypt.compare(dto.password, user.password);;
 
     if (!isPasswordValid) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      return { message: 'Test', status: HttpStatus.UNAUTHORIZED }; 
     }
 
     return this.authService.generateTokens({
-      member_id: user.id
+      member_id: user.id,
+      role_id: user.role
     });
   }
 

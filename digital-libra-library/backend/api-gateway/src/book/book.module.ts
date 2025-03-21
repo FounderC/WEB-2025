@@ -1,25 +1,26 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { BookService } from './book.service';
+import { BookController } from './book.controller';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  controllers: [UserController],
+  imports: [UserModule],
+  controllers: [BookController],
   providers: [
-    UserService,
+    BookService,
     {
-      provide: 'USER_SERVICE',
+      provide: 'BOOK_SERVICE',
       useFactory: () =>
         ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
             urls: ['amqp://localhost:5672'],
-            queue: 'user-service',
+            queue: 'book-service',
             queueOptions: { durable: false },
           },
         }),
     },
   ],
-  exports: [UserService, 'USER_SERVICE'],  // Ensure 'USER_SERVICE' is exported
 })
-export class UserModule {}
+export class BookModule {}

@@ -36,9 +36,10 @@ export class AuthService {
   async verifyAccessToken(token: string): Promise<TokenPayload> {
     try {
       return this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-      });
+        secret: this.configService.get<string>("JWT_SECRET"),
+    });
     } catch (error) {
+      console.log(error);
       throw new RpcException(error);
     }
   }
@@ -57,7 +58,7 @@ export class AuthService {
     const decoded = await this.verifyRefreshToken(refreshToken);
     const tokens = await this.generateTokens({
       member_id: decoded.member_id,
-      //role_id: decoded.role_id,
+      role_id: decoded.role_id,
     });
 
     return tokens;

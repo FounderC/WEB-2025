@@ -14,6 +14,15 @@ async function bootstrap() {
     },
   });
 
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://localhost:5672'],
+      queue: 'book-service',
+      queueOptions: { durable: false },
+    },
+  });
+
   await app.listen(3000);
 }
 bootstrap();
