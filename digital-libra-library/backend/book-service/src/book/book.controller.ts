@@ -8,7 +8,7 @@ export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @MessagePattern('create')
-  create(@Payload() book: BookDTO) {
+  create(book: BookDTO) {
     return this.bookService.create(book);
   }
 
@@ -18,12 +18,12 @@ export class BookController {
   }
 
   @MessagePattern('findOne')
-  findOne(@Payload() id: string) {
+  findOne(@Payload('id') id: string) {
     return this.bookService.findOne(id);
   }
 
   @MessagePattern('update')
-  update(@Payload() id: string, book: BookDTO) {
+  update(@Payload('id') id: string, book: BookDTO) {
     return this.bookService.update(id, book);
   }
 }

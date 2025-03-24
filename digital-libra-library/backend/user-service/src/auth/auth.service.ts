@@ -39,7 +39,6 @@ export class AuthService {
         secret: this.configService.get<string>("JWT_SECRET"),
     });
     } catch (error) {
-      console.log(error);
       throw new RpcException(error);
     }
   }

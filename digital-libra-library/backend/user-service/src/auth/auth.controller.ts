@@ -16,7 +16,6 @@ export class AuthController {
 
   @MessagePattern("verify")
   async verifyToken(dto): Promise<TokenPayload> {
-    console.log("verify")
     return this.authService.verifyAccessToken(dto.token);
   }
 
