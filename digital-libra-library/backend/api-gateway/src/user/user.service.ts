@@ -12,8 +12,8 @@ export class UserService {
       this.userClient.send(pattern, data).pipe(
         timeout(30000),
         catchError((e: any) => {
-          if (e?.message && e?.status) {
-            throw new HttpException(e.message, e.status);
+          if (e.statusCode && e.message) {
+            throw new HttpException(e.message, e.statusCode);
           }
 
           throw new HttpException('Internal server error', 500);

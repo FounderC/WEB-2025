@@ -25,8 +25,6 @@ export class AuthService {
       }),
     ]);
 
-    console.log({accessToken, refreshToken})
-
     return {
       accessToken,
       refreshToken,

@@ -1,4 +1,4 @@
-import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { BookDTO } from './dto';
 import { Book } from './entities/book.entity';
 import { Repository } from 'typeorm';
@@ -43,13 +43,9 @@ export class BookService {
   async update(id: string, dto: BookDTO) {
     const bookResult = await this.findOne(id);
 
-    if (!bookResult.book) {
-      throw new RpcException({ statusCode: 404, message:'Book not found' })
-    }
+    const book = Object.assign(bookResult.book, dto);
+    const saved = await this.bookRepository.save(book);
 
-    const updatedBook = Object.assign(bookResult.book, dto);
-    await this.bookRepository.save(updatedBook);
-  
-    return { message: 'Book updated successfully', book: updatedBook };
+    return { message: 'Book updated successfully', book: saved };
   }
 }

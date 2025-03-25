@@ -11,13 +11,9 @@ export class BookService {
     return firstValueFrom(
       this.bookClient.send(pattern, data).pipe(
         timeout(30000),
-        catchError((e: HttpException) => {
-
-          console.error('Microservice Error:', e); // Log the error to inspect it
-
-          if (e instanceof HttpException) {
-            // Handle HttpException
-            throw new HttpException(e.message, e.getStatus());
+        catchError((e: any) => {
+          if (e.statusCode && e.message) {
+            throw new HttpException(e.message, e.statusCode);
           }
 
           throw new HttpException('Internal server error', 500);

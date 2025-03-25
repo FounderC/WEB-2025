@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
 
-@Controller('books')
+@Controller('book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
   

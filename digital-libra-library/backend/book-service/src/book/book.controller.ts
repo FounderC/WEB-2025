@@ -23,7 +23,7 @@ export class BookController {
   }
 
   @MessagePattern('update')
-  update(@Payload('id') id: string, book: BookDTO) {
+  update(@Payload('id') id: string, @Payload('book') book: BookDTO) {
     return this.bookService.update(id, book);
   }
 }

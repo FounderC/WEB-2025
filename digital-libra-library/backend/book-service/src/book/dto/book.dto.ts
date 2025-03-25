@@ -3,7 +3,7 @@ export interface BookDTO {
   author: string;
   genre: string;
   description: string;
-  publication_year: number; 
+  publication_year: number;
   file_url: string;
   cover_url: string;
 }
