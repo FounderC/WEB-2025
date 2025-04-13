@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate as isUUID } from 'uuid';
 import { RpcException } from '@nestjs/microservices';
 
-
 @Injectable()
 export class BookService {
 
@@ -18,34 +17,32 @@ export class BookService {
   async create(dto: BookDTO) {
     const book = this.bookRepository.create(dto);
     await this.bookRepository.save(book);
-    return { message: 'Book successfully added', book };
+    return { message: 'Operation completed successfully', book };
   }
 
   async findAll() {
     const books = await this.bookRepository.find({});
-    return { message: 'Books retrieved successfully', books };
+    return { message: 'Operation completed successfully', books };
   }
 
   async findOne(id: string) {
     if (!isUUID(id)) {
-      throw new RpcException({ statusCode: 404, message:'Book not found' })
+      throw new RpcException({ statusCode: 400, message:'Invalid request' })
     }
 
     const book = await this.bookRepository.findOne({ where: { id } });
 
     if (!book) {
-      throw new RpcException({ statusCode: 404, message:'Book not found' })
+      throw new RpcException({ statusCode: 404, message:'Not found' })
     }
 
-    return { message: 'Book retrieved successfully', book };
+    return { message: 'Operation completed successfully', book };
   }
 
   async update(id: string, dto: BookDTO) {
-    const bookResult = await this.findOne(id);
-
-    const book = Object.assign(bookResult.book, dto);
-    const saved = await this.bookRepository.save(book);
-
-    return { message: 'Book updated successfully', book: saved };
+    const result = await this.findOne(id);
+    const $result = { ...result.book, ...dto };
+    
+    return { message: 'Operation completed successfully', book: await this.bookRepository.save($result) };
   }
 }

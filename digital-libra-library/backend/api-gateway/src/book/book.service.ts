@@ -1,6 +1,6 @@
-import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, Inject, HttpException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { timeout, catchError, firstValueFrom, throwError } from 'rxjs';
+import { timeout, catchError, firstValueFrom } from 'rxjs';
 import { BookDTO } from './dto';
 
 @Injectable()
@@ -22,8 +22,8 @@ export class BookService {
     );
   }
 
-  create(book: BookDTO) {
-    return this.send('create', book);
+  create(dto: BookDTO) {
+    return this.send('create', dto);
   }
 
   findAll() {
@@ -34,7 +34,7 @@ export class BookService {
     return this.send("findOne", { id });
   }
 
-  update(id: string, book: BookDTO) {
-    return this.send("update", { id, book });
+  update(id: string, dto: BookDTO) {
+    return this.send("update", { id,  dto });
   }
 }

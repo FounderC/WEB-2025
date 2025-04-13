@@ -1,26 +1,25 @@
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { ReadingProgressController } from './reading-progress.controller';
+import { ReadingProgressService } from './reading-progress.service';
 
 @Module({
-  controllers: [UserController],
+  controllers: [ReadingProgressController],
   providers: [
-    UserService,
+    ReadingProgressService,
     {
-      provide: 'USER_SERVICE',
+      provide: 'READING_SERVICE',
       useFactory: () =>
         ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
             urls: ['amqp://localhost:5672'],
-            queue: 'user-service',
+            queue: 'reading-service',
             queueOptions: { durable: false },
           },
         }),
     },
   ],
-  exports: [UserService, 'USER_SERVICE'],
 })
-export class UserModule {}
+export class ReadingProgressModule {}

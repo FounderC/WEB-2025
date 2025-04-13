@@ -1,14 +1,12 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
+import { ReadingProgressModule } from './reading-progress/reading-progress.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    UserModule,
-    AuthModule,
+    ReadingProgressModule,
     ConfigModule.forRoot({isGlobal: true, envFilePath: '../.env'}),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

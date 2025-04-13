@@ -1,9 +1,8 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { BookModule } from './book/book.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { BookModule } from './book/book.module';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [BookModule, TypeOrmModule.forRootAsync({
@@ -19,8 +18,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       synchronize: true
     }),
     inject: [ConfigService]
-  }),],
-  controllers: [AppController],
-  providers: [AppService],
+  }),]
 })
 export class AppModule {}

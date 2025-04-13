@@ -12,8 +12,8 @@ export class BookController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles("admin")
   @Post()
-  async create(@Body() book: BookDTO) {
-    return this.bookService.create(book);
+  async create(@Body() dto: BookDTO) {
+    return this.bookService.create(dto);
   }
 
   @Get()
@@ -25,10 +25,11 @@ export class BookController {
   async findOne(@Param('id') id: string) {
     return this.bookService.findOne(id);
   }
+  
   @UseGuards(AuthGuard, RolesGuard)
   @Roles("admin")
   @Put(':id')
-  async update(@Param('id') id: string, @Body() book: BookDTO) {
-    return this.bookService.update(id, book);
+  async update(@Param('id') id: string, @Body() dto: BookDTO) {
+    return this.bookService.update(id, dto);
   }
 }

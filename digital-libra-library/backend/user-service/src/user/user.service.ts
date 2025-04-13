@@ -22,11 +22,12 @@ export class UserService {
   async create(dto: UserDTO) {
     const userPassword = await bcrypt.hash(dto.password, this.saltRounds);
 
-    const existingEmail = await this.findByEmail(dto.email);
-    const existingUsername = await this.findByName(dto.username);
+    const existingUser = await this.userRepository.findOne({
+      where: [{ email: dto.email }, { username: dto.username }],
+    });
 
-    if (existingEmail || existingUsername) {
-      throw new RpcException({ statusCode: 400, message: 'User already exists' });
+    if (existingUser) {
+      throw new RpcException({ statusCode: 400, message: 'Unable to process request' });
     }
 
     const $user = this.userRepository.create({
@@ -43,29 +44,15 @@ export class UserService {
   }
 
   async login(dto: {email: string; password: string;}) {
-    let user = await this.findByEmail(dto.email);
+    const user = await this.userRepository.findOne({ where: { email: dto.email } });
 
-    if (!user) {
-      throw new RpcException({ statusCode: 401, message:'Invalid credentials.' });    
-    }
-
-    let isPasswordValid = await bcrypt.compare(dto.password, user.password);;
-
-    if (!isPasswordValid) {
-      throw new RpcException({ statusCode: 401, message:'Invalid credentials.' });
+    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
+      throw new RpcException({ statusCode: 401, message: 'Invalid credentials.' });
     }
 
     return this.authService.generateTokens({
       member_id: user.id,
       role_id: user.role
     });
-  }
-  
-  async findByName(username: string) {
-    return this.userRepository.findOne({ where: { username } });
-  }
-
-  async findByEmail(email: string) {
-    return this.userRepository.findOne({ where: { email } });
   }
 }

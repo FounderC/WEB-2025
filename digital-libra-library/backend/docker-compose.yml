@@ -1,0 +1,72 @@
+services:
+  api_gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api-gateway/src:/usr/src/app/src
+    command: npm run start:dev
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+
+  user_service:
+    build: ./user-service
+    volumes:
+      - ./user-service/src:/usr/src/app/src
+    command: npm run start:dev
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - db
+
+  book_service:
+    build: ./book-service
+    volumes:
+      - ./book-service/src:/usr/src/app/src
+    command: npm run start:dev
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - db
+
+
+  reading_service:
+    build: ./reading-service
+    volumes:
+      - ./reading-service/src:/usr/src/app/src
+    command: npm run start:dev
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: example
+
+volumes:
+  postgres_data:
