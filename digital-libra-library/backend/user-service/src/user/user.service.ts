@@ -37,10 +37,15 @@ export class UserService {
   
     const user = await this.userRepository.save($user);
 
-    return this.authService.generateTokens({
+    const tokens = await this.authService.generateTokens({
       member_id: user.id,
       role_id: user.role
     });
+
+    return {
+      id: user.id,
+      jwt: tokens,
+    };
   }
 
   async login(dto: {email: string; password: string;}) {
@@ -50,9 +55,14 @@ export class UserService {
       throw new RpcException({ statusCode: 401, message: 'Invalid credentials.' });
     }
 
-    return this.authService.generateTokens({
+    const tokens = await this.authService.generateTokens({
       member_id: user.id,
       role_id: user.role
     });
+
+    return {
+      id: user.id,
+      jwt: tokens,
+    };
   }
 }

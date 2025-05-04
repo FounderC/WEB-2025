@@ -40,10 +40,14 @@ const BookList = () => {
 
   const createReadingProgress = useMutation({
     mutationFn: async (bookId: string) => {
-      console.log('Creating initial reading progress...');
+      if (!user?.id) {
+        throw new Error('User ID is not available');
+      }
+      
+      console.log('Creating initial reading progress...', { user_id: user.id, book_id: bookId });
       return axios.post('/reading-service', {
         book_id: bookId,
-        user_id: user?.id,
+        user_id: user.id,
         current_page: 1,
         percentage_read: 0
       }, {
@@ -52,8 +56,8 @@ const BookList = () => {
         }
       });
     },
-    onSuccess: () => {
-      console.log('Initial reading progress created successfully');
+    onSuccess: (data) => {
+      console.log('Initial reading progress created successfully', data);
     },
     onError: (error) => {
       console.error('Error creating initial reading progress:', error);

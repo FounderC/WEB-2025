@@ -18,9 +18,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     try {
       const response = await axios.post('/user/login', { email, password });
-      localStorage.setItem('token', response.data.accessToken);
+      
+      localStorage.setItem('token', response.data.jwt.accessToken);
+      
+      const userData = {
+        id: response.data.id,
+      };
+      
+      setUser(userData);
       setIsAuthenticated(true);
-      setUser(response.data.user);
     } catch (error) {
       console.error('Помилка входу:', error);
       throw error;
@@ -35,9 +41,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         password,
         role: 'user'
       });
-      localStorage.setItem('token', response.data.accessToken);
+      
+      localStorage.setItem('token', response.data.jwt.accessToken);
+      
+      const userData = {
+        id: response.data.id,
+      };
+      
+      setUser(userData);
       setIsAuthenticated(true);
-      setUser(response.data.user);
     } catch (error) {
       console.error('Помилка реєстрації:', error);
       throw error;
@@ -54,7 +66,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
-      // Here you could also verify the token with the backend
+      const storedUserId = localStorage.getItem('userId');
+      if (storedUserId) {
+        setUser({ id: storedUserId });
+      }
     }
   }, []);
 
